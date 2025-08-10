@@ -1,5 +1,6 @@
 class Main:
     def __init__(self, window):
+        self.window = window
         pass
     def update(self, dt):
         pass

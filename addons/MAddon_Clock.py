@@ -36,9 +36,9 @@ class Main:
         self.lblTime.x = self.getX(self.x) - 55
         self.lblTime.y = self.getY(self.y)
         self.lblM.x = self.getX(self.x)
-        self.lblM.y = self.getY(self.y)
+        self.lblM.y = self.getY(self.y) - 35
         self.lblS.x = self.getX(self.x) - 10
-        self.lblS.y = self.getY(self.y) - 35
+        self.lblS.y = self.getY(self.y)
         self.lblDate.x = self.getX(self.x)
         self.lblDate.y = self.getY(self.y) - 70
         self.lblTime.text = datetime.datetime.now().strftime("%I:%M")
