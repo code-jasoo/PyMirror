@@ -1,6 +1,6 @@
 # PyMirror
 A simple, performant python script for your DIY smart mirror.<br>
-![PyMirror Icon]([https://github.com/code-jasoo/PyMirror/blob/main/images/PyMirrorLogo.png](https://github.com/code-jasoo/PyMirror/blob/main/images/PyMirrorLogo%20256.png))
+![PyMirror Icon](https://github.com/code-jasoo/PyMirror/blob/main/images/PyMirrorLogo.png](https://github.com/code-jasoo/PyMirror/blob/main/images/PyMirrorLogo%20256.png)
 <br>
 **This project is a work in progress!**<br><br>
 PyMirror uses *pyglet* as its rendering engine to enable smooth, high-performance graphics while being simple and easy to customize.
