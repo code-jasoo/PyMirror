@@ -16,7 +16,7 @@ if not os.path.exists("config.json"):
         "vsync": False, 
         "user-agent": "Mozilla/5.0 (Windows NT 11.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.6998.166 Safari/537.36"
         }
-    with open("config.json", "wx") as f:
+    with open("config.json", "w") as f:
         f.write(config_file)
 
 with open("config.json", "r") as f:
@@ -24,13 +24,13 @@ with open("config.json", "r") as f:
 
 # Raspiberry Pi config
 if config_file["open-gl-es"]:
+    pg.options.shadow_window = False
     display = pg.display.get_display()
     screen = display.get_default_screen()
     config = screen.get_best_config()
     config.opengl_api = "gles"
     config.major_version = 3
     config.minor_version = 1
-    pg.options.shadow_window = False
 else:
     config = pg.gl.Config(double_buffer=True, samples = 4, sample_buffers = 1)
 
@@ -38,6 +38,7 @@ else:
 window = pg.window.Window(resizable=True, config=config)
 window.set_fullscreen(True)
 window.set_mouse_visible(False)
+window.set_vsync(config_file["vsync"])
 
 # Font setup
 pg.options['win32_gdi_font'] = True
@@ -47,6 +48,7 @@ helvetica = pg.font.load("Montserrat")
 # Notifications
 lblErrorNotif = pg.text.Label("", x = 10, y = 10, anchor_x="left", anchor_y="bottom", align="center", color=(255, 0, 0), weight="bold", font_name="Montserrat", font_size=10)
 
+fpsdisplay = pg.window.FPSDisplay(window=window)
 
 # Addon setup
 addons = []
@@ -59,7 +61,6 @@ for d in os.listdir(os.getcwd() + "/addons"):
             addons.append(importlib.import_module(d[:-3]).Main(window))
         except Exception as e:
             lblErrorNotif.text = "Unable to load " + d + "!"
-            traceback.print_exc()
 
 @window.event
 def on_draw():
@@ -68,6 +69,7 @@ def on_draw():
         lblErrorNotif.draw()
     for a in addons:
         a.draw()
+    fpsdisplay.draw()
 
 def update(dt):
     for a in addons:
@@ -75,7 +77,6 @@ def update(dt):
             a.update(dt)
         except Exception as e:
             lblErrorNotif.text = "Unable to load " + a.__module__ + "!"
-            traceback.print_exc()
 
 @window.event
 def on_key_press(s, m):

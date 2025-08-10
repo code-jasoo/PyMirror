@@ -21,20 +21,35 @@ class Main:
         self.urls.append("https://ics.calendarlabs.com/76/51531e26/US_Holidays.ics")
         self.calendar = ics.Calendar()
 
+        # Timers
+        self.pUpdate = 0
+        self.pRefresh = 0
+
         self.t1 = threading.Thread(target = self.handleRequest, args = (self.urls,), daemon = True)
         self.t1.start()
 
         for i in range(4):
             self.lblDates.append(pg.text.Label("", x = self.getX(self.x), y = self.getY(self.y - (i * 5)), color=(255 - (i * 64), 255 - (i * 64), 255 - (i * 64)), font_name="Montserrat", font_size=20, anchor_x="right", anchor_y="top", align="right", multiline=True, width=self.getX(50)))
     def update(self, dt):
-        i = 0
-        if self.getFutureEvents() == []:
-            return
-        for lbl in self.lblDates:
-            lbl.text = self.getFutureEvents()[i].name + "\n" + self.getFutureEvents()[i].begin.strftime("%A. %d %B %Y")
-            lbl.x = self.getX(self.x)
-            lbl.y = self.getY(self.y - (i * 8))
-            i += 1
+        # Update timers
+        self.pUpdate += dt
+        self.pRefresh += dt
+    
+        if self.pRefresh >= 5: # Every five seconds refresh the calendar
+            self.pRefresh = 0
+            i = 0
+            if self.getFutureEvents() == []:
+                return
+            for lbl in self.lblDates:
+                lbl.text = self.getFutureEvents()[i].name + "\n" + self.getFutureEvents()[i].begin.strftime("%A. %d %B %Y")
+                lbl.x = self.getX(self.x)
+                lbl.y = self.getY(self.y - (i * 8))
+                i += 1
+        
+        if self.pUpdate >= 3600: # Every hour update the data, although probably should be once a month.
+            self.pUpdate = 0
+            self.t1 = threading.Thread(target = self.handleRequest, args = (self.urls,), daemon = True)
+            self.t1.start()
     def draw(self):
         for lbl in self.lblDates:
             lbl.draw()
